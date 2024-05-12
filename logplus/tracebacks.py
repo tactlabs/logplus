@@ -6,10 +6,6 @@
 """
 Extract a structured traceback from an exception.
 
-`Contributed by Will McGugan
-<https://github.com/hynek/logplus/pull/407#issuecomment-1150926246>`_ from
-`rich.traceback
-<https://github.com/Textualize/rich/blob/972dedff/rich/traceback.py>`_.
 """
 
 from __future__ import annotations

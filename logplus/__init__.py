@@ -50,7 +50,7 @@ except ImportError:
 
 __title__ = "logplus"
 
-__author__ = "Hynek Schlawack"
+__author__ = "Raja CSP Raman"
 
 __license__ = "MIT or Apache License, Version 2.0"
 __copyright__ = "Copyright (c) 2013 " + __author__

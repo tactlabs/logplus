@@ -39,7 +39,6 @@ _ASYNC_CALLING_STACK: contextvars.ContextVar[FrameType] = (
 
 # For proper isolation, we have to use a dict of ContextVars instead of a
 # single ContextVar with a dict.
-# See https://github.com/hynek/logplus/pull/302 for details.
 _CONTEXT_VARS: dict[str, contextvars.ContextVar[Any]] = {}
 
 
