@@ -320,7 +320,7 @@ class LogLevelColumnFormatter:
             else self.level_styles.get(level, "")
         )
 
-        return f"[{style}{_pad(level, self.width)}{self.reset_style}]"
+        return f"({style}{_pad(level, self.width)}{self.reset_style})"
 
 
 _NOTHING = object()
