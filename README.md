@@ -18,6 +18,16 @@ Log Better
 
 # installation
 
+From local:
+```
+git clone git@github.com:tactlabs/logplus.git
+cd logplus
+pip install -e .
+
+verify:
+pip show logplus
+```
+
 Install directly from PyPi:
 
     pip install logplus
