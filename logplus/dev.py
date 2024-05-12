@@ -14,6 +14,8 @@ from __future__ import annotations
 import shutil
 import sys
 import warnings
+import inspect
+import os
 
 from dataclasses import dataclass
 from io import StringIO
@@ -320,7 +322,7 @@ class LogLevelColumnFormatter:
             else self.level_styles.get(level, "")
         )
 
-        return f"({style}{_pad(level, self.width)}{self.reset_style})"
+        return f"{style}{_pad(level, self.width)}{self.reset_style}"
 
 
 _NOTHING = object()
@@ -707,15 +709,53 @@ class ConsoleRenderer:
 
         return repr(val)
 
+    def _get_log_base(self, calframe):
+
+        c_frame = calframe[6]
+
+        line_no  = c_frame.lineno
+        caller_fn = c_frame.function
+
+        # Get the filename from the calframe
+        absolute_path = c_frame.filename
+
+        # Convert absolute path to path with ~
+        home_dir = os.path.expanduser('~')
+        relative_path = os.path.relpath(absolute_path, home_dir)
+        home_path = f"~/{relative_path}"
+
+        log_base = f'[{home_path}:{line_no}][{str(caller_fn)}]'
+
+        return log_base
+
+    def _combine_params(self, *args):
+
+        string_part = ""
+        for arg in args:
+            string_part += str(arg) + " "
+
+        return string_part
+
+    def _decorate_info(self, msg) -> str:
+        curframe = inspect.currentframe()
+        calframe = inspect.getouterframes(curframe, 2)
+
+        current_log_base    = self._get_log_base(calframe)
+        string_part         = self._combine_params(msg)
+        class_part          = f'{string_part} {current_log_base}'
+
+        return class_part
+
     def __call__(
         self, logger: WrappedLogger, name: str, event_dict: EventDict
     ) -> str:
+
         stack = event_dict.pop("stack", None)
         exc = event_dict.pop("exception", None)
         exc_info = event_dict.pop("exc_info", None)
 
         kvs = [
-            col.formatter(col.key, val)
+            col.formatter(col.key, self._decorate_info(val) if col.key == "level" else val)
             for col in self._columns
             if (val := event_dict.pop(col.key, _NOTHING)) is not _NOTHING
         ] + [
